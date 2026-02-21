@@ -6,10 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:migrate": "npx tsx database/migrate.mts",
+    "db:seed": "npx tsx database/seed.mts",
+    "db:reset": "npx tsx database/reset.mts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
+    "dotenv": "^17.3.1",
     "jose": "^6.1.3",
     "jsonwebtoken": "^9.0.3",
     "next": "16.1.6",
@@ -26,6 +30,7 @@
     "eslint": "^10.0.0",
     "eslint-config-next": "^0.2.4",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

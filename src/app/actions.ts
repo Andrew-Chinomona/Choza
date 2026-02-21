@@ -1,9 +1,9 @@
 "use server";
 
-import { neon } from "@neondatabase/serverless";
+import { rooms } from "@/lib/db";
 
-export async function getData() {
-  const sql = neon(process.env.DATABASE_URL!);
-  const data = await sql`SELECT * FROM items ORDER BY id`;
-  return data;
+const MVP_HOTEL_ID = "a0000000-0000-0000-0000-000000000001";
+
+export async function getRooms() {
+  return rooms.getRoomsByHotel(MVP_HOTEL_ID);
 }
