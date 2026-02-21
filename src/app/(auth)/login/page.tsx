@@ -107,6 +107,12 @@ export default function Home() {
               Forgot password?
             </a>
           </div>
+
+          <div className="mt-5 text-center">
+            <a href="/signup" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">
+              Don't have an account? Sign Up
+            </a>
+          </div>
           {error && (
             <div className="mt-4 text-red-600 dark:text-red-400 text-sm text-center">
               {error}
