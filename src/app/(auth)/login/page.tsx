@@ -16,7 +16,7 @@ export default function Home() {
     event.preventDefault();
     setError("");
     setIsLoading(true);
-    
+    /*
     try{
       const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -41,7 +41,8 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-    router.push(``);
+    */
+    router.push(`/management`);
   };
 
   return (
