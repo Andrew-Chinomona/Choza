@@ -69,7 +69,7 @@ All seed users have PIN `1234`:
 
 Typed repository modules live under `src/lib/db/`:
 
-- `neon.ts` — connection factory
+- `neon.ts` — connection factory (uses `DATABASE_URL`)
 - `types.ts` — TypeScript interfaces for all entities
 - `rooms.ts`, `assignments.ts`, `cleaning.ts`, `notes.ts`, `maintenance.ts`, `audit.ts`, `users.ts` — hotel-scoped query functions
 - `index.ts` — barrel export
@@ -79,6 +79,43 @@ Import from `@/lib/db`:
 ```ts
 import { rooms, users } from "@/lib/db";
 const allRooms = await rooms.getRoomsByHotel(hotelId);
+```
+
+## Database Integration
+
+The app talks to Neon Postgres only on the server. All DB access goes through `src/lib/db/`.
+
+| Where | How it connects |
+|-------|------------------|
+| **Server Actions** (`src/app/actions.ts`) | Import `@/lib/db` and call repository functions (e.g. `rooms.getRoomsByHotel(hotelId)`). Used by forms and client-triggered data fetches. |
+| **API routes** (`src/app/api/.../route.ts`) | Same: import `@/lib/db`, call repos. Use for login, CRUD, and cron. Always scope by `hotel_id` from the session. |
+| **Server Components** (pages under `src/app/`) | Import `@/lib/db` and await repo functions directly. No `"use client"`; DB code runs only on the server. |
+| **Client Components** | Do not import `@/lib/db`. Fetch via Server Actions or `fetch('/api/...')` instead. |
+
+**Important:** Every query must be scoped by `hotel_id` (from the logged-in user’s session) to enforce multi-tenant isolation. The DB layer does not add this automatically — the caller passes `hotelId`.
+
+**Example — Server Component fetching rooms:**
+
+```ts
+// src/app/(dashboard)/housekeeping/page.tsx
+import { assignments } from "@/lib/db";
+
+export default async function HousekeepingPage() {
+  const hotelId = "a0000000-0000-0000-0000-000000000001"; // from session in real app
+  const list = await assignments.getAssignmentsForHousekeeper(hotelId, userId);
+  return (/* ... */);
+}
+```
+
+**Example — Server Action:**
+
+```ts
+"use server";
+import { rooms } from "@/lib/db";
+
+export async function setRoomVacant(roomId: string, hotelId: string, isVacant: boolean) {
+  return rooms.setVacancy(roomId, hotelId, isVacant);
+}
 ```
 
 ## Cron Endpoints (Production)
