@@ -11,6 +11,10 @@ const getJwtSecretKey = () => {
 };
 
 export async function middleware(request: NextRequest) {
+
+  //dev purposes
+  return NextResponse.next();
+
   const { pathname } = request.nextUrl;
 
   if (
